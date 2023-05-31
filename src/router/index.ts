@@ -15,6 +15,11 @@ const router = createRouter({
       path: '/images',
       name: 'Images',
       component: ImagesView
+    },
+    {
+      path: '/containers',
+      name: 'Containers',
+      component: HomeView
     }
   ]
 })
