@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import ImagesView from '../views/ImagesView.vue'
+import ContainersView from '../views/ContainersView.vue'
 import { useGlobalStore } from "../stores/global"
 
 const router = createRouter({
@@ -19,7 +20,7 @@ const router = createRouter({
     {
       path: '/containers',
       name: 'Containers',
-      component: HomeView
+      component: ContainersView
     }
   ]
 })
