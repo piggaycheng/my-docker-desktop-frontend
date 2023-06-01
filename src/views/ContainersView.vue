@@ -35,6 +35,7 @@ const messageCallback = (e: MessageEvent) => {
         break;
       case "removeContainer":
       case "startContainer":
+      case "stopContainer":
         getContainers();
         break;
       default:
@@ -75,6 +76,14 @@ function startContainer(containerId: string) {
     "containerId": containerId
   })
 }
+
+function stopContainer(containerId: string) {
+  window.postMessage({
+    "type": "container",
+    "method": "stopContainer",
+    "containerId": containerId
+  })
+}
 </script>
 
 <template>
@@ -82,7 +91,10 @@ function startContainer(containerId: string) {
     <v-data-table :items="data" item-value="ID" :headers="dataTableConfig.headers"
       :items-per-page="dataTableConfig.itemsPerPage">
       <template v-slot:item.actions="{ item }">
-        <v-btn variant="flat" size="small" class="me-2" icon="mdi-play" @click="startContainer(item.value)"></v-btn>
+        <v-btn v-if="item.raw.State === 'exited'" variant="flat" size="small" class="me-2" icon="mdi-play"
+          @click="startContainer(item.value)"></v-btn>
+        <v-btn v-else-if="item.raw.State === 'running'" variant="flat" size="small" class="me-2" icon="mdi-pause"
+          @click="stopContainer(item.value)"></v-btn>
         <v-btn variant="flat" size="small" class="me-2" icon="mdi-delete" @click="removeContainer(item.value)"></v-btn>
         <v-btn variant="flat" size="small" icon="mdi-dots-horizontal"></v-btn>
       </template>
