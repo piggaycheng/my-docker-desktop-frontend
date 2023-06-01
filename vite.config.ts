@@ -20,7 +20,4 @@ export default defineConfig({
     emptyOutDir: true,
   },
   base: "./",
-  define: {
-    __VUE_PROD_DEVTOOLS__: true
-  }
 })
