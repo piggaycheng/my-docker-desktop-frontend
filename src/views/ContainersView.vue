@@ -84,6 +84,12 @@ function stopContainer(containerId: string) {
     "containerId": containerId
   })
 }
+
+const moreItems = [{
+  "title": "Terminal"
+}, {
+  "title": "Logs"
+}]
 </script>
 
 <template>
@@ -96,7 +102,16 @@ function stopContainer(containerId: string) {
         <v-btn v-else-if="item.raw.State === 'running'" variant="flat" size="small" class="me-2" icon="mdi-pause"
           @click="stopContainer(item.value)"></v-btn>
         <v-btn variant="flat" size="small" class="me-2" icon="mdi-delete" @click="removeContainer(item.value)"></v-btn>
-        <v-btn variant="flat" size="small" icon="mdi-dots-horizontal"></v-btn>
+        <v-btn variant="flat" size="small" icon>
+          <v-icon>mdi-dots-horizontal</v-icon>
+          <v-menu activator="parent">
+            <v-list>
+              <v-list-item v-for="(item, index) in moreItems" :key="index" :value="index">
+                <v-list-item-title>{{ item.title }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </v-btn>
       </template>
     </v-data-table>
   </div>
