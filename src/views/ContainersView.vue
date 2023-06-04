@@ -86,9 +86,13 @@ function stopContainer(containerId: string) {
 }
 
 const moreItems = [{
-  "title": "Terminal"
+  "title": "Logs",
+  "to": "Detail",
+  "query": { tab: "logs" }
 }, {
-  "title": "Logs"
+  "title": "Terminal",
+  "to": "Detail",
+  "query": { tab: "terminal" }
 }]
 </script>
 
@@ -106,7 +110,8 @@ const moreItems = [{
           <v-icon>mdi-dots-horizontal</v-icon>
           <v-menu activator="parent">
             <v-list>
-              <v-list-item v-for="(item, index) in moreItems" :key="index" :value="index">
+              <v-list-item v-for="(item, index) in moreItems" :key="index" :value="index"
+                :to="{ name: item.to, query: item.query }">
                 <v-list-item-title>{{ item.title }}</v-list-item-title>
               </v-list-item>
             </v-list>

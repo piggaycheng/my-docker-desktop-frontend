@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import ImagesView from '../views/ImagesView.vue'
 import ContainersView from '../views/ContainersView.vue'
+import DetailView from '../views/DetailView.vue'
 import { useGlobalStore } from "../stores/global"
 
 const router = createRouter({
@@ -21,6 +22,11 @@ const router = createRouter({
       path: '/containers',
       name: 'Containers',
       component: ContainersView
+    },
+    {
+      path: '/detail',
+      name: 'Detail',
+      component: DetailView,
     }
   ]
 })
