@@ -110,9 +110,9 @@ const moreItems = [{
           <v-icon>mdi-dots-horizontal</v-icon>
           <v-menu activator="parent">
             <v-list>
-              <v-list-item v-for="(item, index) in moreItems" :key="index" :value="index"
-                :to="{ name: item.to, query: item.query }">
-                <v-list-item-title>{{ item.title }}</v-list-item-title>
+              <v-list-item v-for="(moreItem, index) in moreItems" :key="index" :value="index"
+                :to="{ name: moreItem.to, query: Object.assign(moreItem.query, { id: item.raw.ID }) }">
+                <v-list-item-title>{{ moreItem.title }}</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>

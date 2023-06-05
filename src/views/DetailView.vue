@@ -4,6 +4,7 @@ import { useRoute } from "vue-router"
 
 const route = useRoute()
 const queryTab = route.query.tab
+const containerId = route.query.id
 
 const tab = ref(queryTab)
 const tabs = ["logs", "terminal"]
