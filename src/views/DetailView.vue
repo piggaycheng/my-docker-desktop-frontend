@@ -29,6 +29,11 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener("message", messageCallback)
+  window.postMessage({
+    "type": "container",
+    "method": "killSubProcess",
+    "processKey": "logs"
+  })
 })
 
 watch(tab, (newVal, oldVal) => {
