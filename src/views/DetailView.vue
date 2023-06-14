@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from "vue"
 import { useRoute } from "vue-router"
+import { useGlobalStore } from "../stores/global"
 
 const route = useRoute()
 const queryTab = route.query.tab
@@ -23,8 +24,12 @@ const messageCallback = (e: MessageEvent) => {
   }
 }
 
+const globalStore = useGlobalStore();
+
 onMounted(() => {
   window.addEventListener("message", messageCallback)
+  globalStore.showSidebar = false;
+  globalStore.showAppBarBackBtn = true;
 })
 
 onUnmounted(() => {
@@ -34,6 +39,8 @@ onUnmounted(() => {
     "method": "killSubProcess",
     "processKey": "logs"
   })
+  globalStore.showSidebar = true;
+  globalStore.showAppBarBackBtn = false;
 })
 
 watch(tab, (newVal, oldVal) => {

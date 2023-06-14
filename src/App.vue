@@ -1,15 +1,26 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView, useRouter } from 'vue-router'
 import Sidebar from './components/Sidebar.vue';
 import { useGlobalStore } from "./stores/global"
 
 const globalStore = useGlobalStore();
+const router = useRouter();
+
+const backHandler = () => {
+  router.go(-1);
+}
 </script>
 
 <template>
   <v-layout>
-    <Sidebar></Sidebar>
-    <v-app-bar :title="globalStore.appBarTitle"></v-app-bar>
+    <Sidebar v-model="globalStore.showSidebar"></Sidebar>
+    <v-app-bar :title="globalStore.appBarTitle">
+      <template #prepend>
+        <v-btn v-if="globalStore.showAppBarBackBtn" variant="flat" icon @click="backHandler">
+          <v-icon>mdi-arrow-left</v-icon>
+        </v-btn>
+      </template>
+    </v-app-bar>
     <v-main>
       <RouterView />
     </v-main>
