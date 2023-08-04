@@ -35,7 +35,7 @@ const messageCallback = (e: MessageEvent) => {
 }
 
 const execCallback = (e: string) => {
-  if (e.charAt(e.length - 1) === '\n') {
+  if (!termStart && e.charAt(e.length - 1) === '\n') {
     termStart = true;
     return;
   }
