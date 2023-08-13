@@ -16,7 +16,11 @@ const terminal = new Terminal({
   cursorBlink: true,
 });
 terminal.onData((data) => {
-  w.process.send("inputPty", data)
+  w.process.send("mainPty", {
+    "type": "container",
+    "method": "inputPty",
+    "data": data
+  })
 })
 const xterm = ref()
 let termStart = false;
@@ -53,13 +57,8 @@ onMounted(() => {
 
   terminal.open(xterm.value);
 
-  w.process.send("toMain", {
-    "type": "container",
-    "method": "execContainer",
-    "containerId": containerId
-  })
-
-  w.process.receive("fromMain", execCallback)
+  w.process.receive("replyExecPty", execCallback)
+  execContainer()
 })
 
 onUnmounted(() => {
@@ -85,6 +84,14 @@ function getContainerLogs() {
   window.postMessage({
     "type": "container",
     "method": "getContainerLogs",
+    "containerId": containerId
+  })
+}
+
+function execContainer() {
+  w.process.send("mainPty", {
+    "type": "container",
+    "method": "execContainer",
     "containerId": containerId
   })
 }
