@@ -54,11 +54,11 @@ onMounted(() => {
   globalStore.showAppBarBackBtn = true;
 
   terminal.open(xterm.value);
-  w.process.receive("replyExecPty", execCallback)
+  w.process.listen("replyExecPty", execCallback)
   execContainer()
 
   logsTerminal.open(logsXterm.value);
-  w.process.receive("replyLogsPty", logsCallback)
+  w.process.listen("replyLogsPty", logsCallback)
   getContainerLogs()
 })
 
