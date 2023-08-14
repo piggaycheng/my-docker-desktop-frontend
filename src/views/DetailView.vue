@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from "vue"
+import { ref, onMounted, onUnmounted } from "vue"
 import { useRoute } from "vue-router"
 import { useGlobalStore } from "../stores/global"
 import { Terminal } from "xterm"
@@ -11,7 +11,7 @@ const containerId = route.query.id
 
 const tab = ref(queryTab)
 
-const containerLogs = ref("")
+const logsTerminal = new Terminal();
 const terminal = new Terminal({
   cursorBlink: true,
 });
@@ -22,21 +22,10 @@ terminal.onData((data) => {
     "data": data
   })
 })
+const logsXterm = ref()
 const xterm = ref()
 let termStart = false;
-
-const messageCallback = (e: MessageEvent) => {
-  if (e.data["origin-message"]) {
-    switch (e.data["origin-message"].method) {
-      case "getContainerLogs":
-        containerLogs.value += e.data.content;
-        break;
-      default:
-        break;
-    }
-
-  }
-}
+let logsTermStart = false;
 
 const execCallback = (e: string) => {
   if (!termStart && e.charAt(e.length - 1) === '\n') {
@@ -48,40 +37,38 @@ const execCallback = (e: string) => {
   }
 }
 
+const logsCallback = (e: string) => {
+  if (!logsTermStart && e.charAt(e.length - 1) === '\n') {
+    logsTermStart = true;
+    return;
+  }
+  if (logsTermStart) {
+    logsTerminal.write(e)
+  }
+}
+
 const globalStore = useGlobalStore();
 
 onMounted(() => {
-  // window.addEventListener("message", messageCallback)
   globalStore.showSidebar = false;
   globalStore.showAppBarBackBtn = true;
 
   terminal.open(xterm.value);
-
   w.process.receive("replyExecPty", execCallback)
   execContainer()
+
+  logsTerminal.open(logsXterm.value);
+  w.process.receive("replyLogsPty", logsCallback)
+  getContainerLogs()
 })
 
 onUnmounted(() => {
-  // window.removeEventListener("message", messageCallback)
-  // window.postMessage({
-  //   "type": "container",
-  //   "method": "killSubProcess",
-  //   "processKey": "logs"
-  // })
   globalStore.showSidebar = true;
   globalStore.showAppBarBackBtn = false;
 })
 
-watch(tab, (newVal, oldVal) => {
-  if (newVal === "logs") {
-    // getContainerLogs()
-  }
-}, {
-  immediate: true
-})
-
 function getContainerLogs() {
-  window.postMessage({
+  w.process.send("mainPty", {
     "type": "container",
     "method": "getContainerLogs",
     "containerId": containerId
@@ -103,10 +90,10 @@ function execContainer() {
     <v-tab value="terminal">Terminal</v-tab>
   </v-tabs>
   <v-window v-model="tab">
-    <v-window-item value="logs">
-      <pre>{{ containerLogs }}</pre>
+    <v-window-item value="logs" eager>
+      <div ref="logsXterm"></div>
     </v-window-item>
-    <v-window-item value="terminal">
+    <v-window-item value="terminal" eager>
       <div ref="xterm"></div>
     </v-window-item>
   </v-window>
