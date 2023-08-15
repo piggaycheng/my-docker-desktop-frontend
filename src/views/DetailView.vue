@@ -65,6 +65,9 @@ onMounted(() => {
 onUnmounted(() => {
   globalStore.showSidebar = true;
   globalStore.showAppBarBackBtn = false;
+
+  w.process.listenOff("replyExecPty")
+  w.process.listenOff("replyLogsPty")
 })
 
 function getContainerLogs() {
