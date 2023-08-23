@@ -66,6 +66,16 @@ onUnmounted(() => {
   globalStore.showSidebar = true;
   globalStore.showAppBarBackBtn = false;
 
+  w.process.send("mainPty", {
+    "type": "container",
+    "method": "exitExec"
+  })
+
+  w.process.send("mainPty", {
+    "type": "container",
+    "method": "exitLogs"
+  })
+
   w.process.listenOff("replyExecPty")
   w.process.listenOff("replyLogsPty")
 })
