@@ -3,6 +3,7 @@ import { onMounted, onUnmounted, ref } from 'vue';
 import { VDataTable } from 'vuetify/labs/components';
 import { useRouter } from 'vue-router';
 
+const w = (window as any);
 const data = ref([]);
 const dataTableConfig = ref({
   itemsPerPage: 5,
@@ -42,20 +43,36 @@ const messageCallback = (e: MessageEvent) => {
       default:
         break;
     }
+  }
+}
 
+let isContent = false;
+let content = "";
+
+const mainCallback = (e: any) => {
+  if (isContent) {
+    content += e
+  }
+
+  if (e.charAt(e.length - 1) === '\n' && !isContent) {
+    isContent = !isContent
+  } else if (e.charAt(e.length - 1) === '\n' && isContent) {
+    isContent = !isContent
+
+    data.value = JSON.parse(`[${content.split("\n").filter(a => a).join(",")}]`)
   }
 }
 
 onMounted(() => {
-  window.addEventListener("message", messageCallback)
-  window.postMessage({
+  w.process.listen("replyMainPty", mainCallback)
+  w.process.send("mainPty", {
     "type": "image",
     "method": "getImages"
   })
 })
 
 onUnmounted(() => {
-  window.removeEventListener("message", messageCallback)
+  w.process.listenOff("replyMainPty")
 })
 
 const runImage = (imageId: string) => {
