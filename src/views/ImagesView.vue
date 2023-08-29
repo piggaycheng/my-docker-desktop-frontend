@@ -50,17 +50,24 @@ let isContent = false;
 let content = "";
 
 const mainCallback = (e: any) => {
-  if (isContent) {
-    content += e
+  switch (e.originMessage.method) {
+    case "getImages":
+      if (isContent) {
+        content += e.data
+      }
+      if (e.data.charAt(e.data.length - 1) === '\n' && !isContent) {
+        isContent = !isContent
+      } else if (e.data.charAt(e.data.length - 1) === '\n' && isContent) {
+        isContent = !isContent
+        data.value = JSON.parse(`[${content.split("\n").filter(a => a).join(",")}]`)
+      }
+      break;
+    case "runImage":
+      break;
+    default:
+      break;
   }
 
-  if (e.charAt(e.length - 1) === '\n' && !isContent) {
-    isContent = !isContent
-  } else if (e.charAt(e.length - 1) === '\n' && isContent) {
-    isContent = !isContent
-
-    data.value = JSON.parse(`[${content.split("\n").filter(a => a).join(",")}]`)
-  }
 }
 
 onMounted(() => {
