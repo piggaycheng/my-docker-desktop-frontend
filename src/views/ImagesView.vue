@@ -31,21 +31,6 @@ const dataTableConfig = ref({
 })
 const router = useRouter()
 
-const messageCallback = (e: MessageEvent) => {
-  if (e.data["origin-message"]) {
-    switch (e.data["origin-message"].method) {
-      case "getImages":
-        data.value = JSON.parse(e.data.content)
-        break;
-      case "runImage":
-        router.push({ path: "/containers" })
-        break;
-      default:
-        break;
-    }
-  }
-}
-
 let isContent = false;
 let content = "";
 
@@ -63,6 +48,7 @@ const mainCallback = (e: any) => {
       }
       break;
     case "runImage":
+      router.push({ path: "/containers" })
       break;
     default:
       break;
