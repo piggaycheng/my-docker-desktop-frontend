@@ -1,10 +1,18 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref, computed } from 'vue';
 import { VDataTable } from 'vuetify/labs/components';
 import { useRouter } from 'vue-router';
+import { useReplyMessage } from '../hooks/MainPty'
 
 const w = (window as any);
-const data = ref([]);
+const imageListReplyMessage = useReplyMessage("getImages")
+const data = computed(() => {
+  let result = []
+  try {
+    result = JSON.parse(imageListReplyMessage.replyMessage.value as any)
+  } catch { }
+  return result
+});
 const dataTableConfig = ref({
   itemsPerPage: 5,
   headers: [{
@@ -31,21 +39,10 @@ const dataTableConfig = ref({
 })
 const router = useRouter()
 
-let isContent = false;
-let content = "";
-
 const mainCallback = (e: any) => {
   switch (e.originMessage.method) {
     case "getImages":
-      if (isContent) {
-        content += e.data
-      }
-      if (e.data.charAt(e.data.length - 1) === '\n' && !isContent) {
-        isContent = !isContent
-      } else if (e.data.charAt(e.data.length - 1) === '\n' && isContent) {
-        isContent = !isContent
-        data.value = JSON.parse(`[${content.split("\n").filter(a => a).join(",")}]`)
-      }
+      imageListReplyMessage.appendReplyMessage(e.data)
       break;
     case "runImage":
       router.push({ path: "/containers" })
