@@ -1,4 +1,4 @@
-import { ref, computed } from "vue"
+import { ref, computed, onMounted, onUnmounted } from "vue"
 
 const useReplyMessage = (type: string) => {
 	const content = ref("");
@@ -31,6 +31,28 @@ const useReplyMessage = (type: string) => {
 	}
 }
 
+const useListener = (channel: string, callback: (e: callbackEvent) => void) => {
+	const w = (window as any);
+
+	onMounted(() => {
+		w.process.listen(channel, callback)
+	})
+
+	onUnmounted(() => {
+		w.process.listenOff(channel)
+	})
+}
+
+export interface callbackEvent {
+	data: string;
+	originMessage: {
+		type: string;
+		method: string;
+		[key: string]: string;
+	}
+}
+
 export {
-	useReplyMessage
+	useReplyMessage,
+	useListener
 }

@@ -2,7 +2,7 @@
 import { onMounted, onUnmounted, ref, computed } from 'vue';
 import { VDataTable } from 'vuetify/labs/components';
 import { useRouter } from 'vue-router';
-import { useReplyMessage } from '../hooks/MainPty'
+import { useReplyMessage, useListener } from '../hooks/MainPty'
 
 const w = (window as any);
 const imageListReplyMessage = useReplyMessage("getImages")
@@ -50,19 +50,15 @@ const mainCallback = (e: any) => {
     default:
       break;
   }
-
 }
 
+useListener("replyMainPty", mainCallback)
+
 onMounted(() => {
-  w.process.listen("replyMainPty", mainCallback)
   w.process.send("mainPty", {
     "type": "image",
     "method": "getImages"
   })
-})
-
-onUnmounted(() => {
-  w.process.listenOff("replyMainPty")
 })
 
 const runImage = (imageId: string) => {
