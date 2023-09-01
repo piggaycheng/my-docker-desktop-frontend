@@ -43,6 +43,27 @@ const useListener = (channel: string, callback: (e: CallbackEvent) => void) => {
 	})
 }
 
+
+const useSendMessage = () => {
+	const w = (window as any);
+
+	const sendMessage = (channel: string, type: string, method: string, args?: { [key: string]: any }) => {
+		const message = args ? {
+			"type": type,
+			"method": method,
+			...args
+		} : {
+			"type": type,
+			"method": method
+		}
+		w.process.send(channel, message)
+	}
+
+	return {
+		sendMessage
+	}
+}
+
 export interface CallbackEvent {
 	data: string;
 	originMessage: {
@@ -54,5 +75,6 @@ export interface CallbackEvent {
 
 export {
 	useReplyMessage,
+	useSendMessage,
 	useListener
 }
