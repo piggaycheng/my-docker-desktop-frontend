@@ -31,7 +31,7 @@ const useReplyMessage = (type: string) => {
 	}
 }
 
-const useListener = (channel: string, callback: (e: callbackEvent) => void) => {
+const useListener = (channel: string, callback: (e: CallbackEvent) => void) => {
 	const w = (window as any);
 
 	onMounted(() => {
@@ -43,7 +43,7 @@ const useListener = (channel: string, callback: (e: callbackEvent) => void) => {
 	})
 }
 
-export interface callbackEvent {
+export interface CallbackEvent {
 	data: string;
 	originMessage: {
 		type: string;

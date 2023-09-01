@@ -2,7 +2,7 @@
 import { onMounted, onUnmounted, ref, computed } from 'vue';
 import { VDataTable } from 'vuetify/labs/components';
 import { useRouter } from 'vue-router';
-import { useReplyMessage, useListener } from '../hooks/MainPty'
+import { useReplyMessage, useListener, type CallbackEvent } from '../hooks/MainPty'
 
 const w = (window as any);
 const imageListReplyMessage = useReplyMessage("getImages")
@@ -39,7 +39,7 @@ const dataTableConfig = ref({
 })
 const router = useRouter()
 
-const mainCallback = (e: any) => {
+const mainCallback = (e: CallbackEvent) => {
   switch (e.originMessage.method) {
     case "getImages":
       imageListReplyMessage.appendReplyMessage(e.data)
