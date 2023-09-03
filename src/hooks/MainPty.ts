@@ -12,11 +12,14 @@ const useReplyMessage = (type: string) => {
 	}
 
 	const replyMessage = computed(() => {
-		let result = ""
+		let result: any = ""
 		switch (type) {
 			case "getImages":
-				const splitContent = content.value.split("\n")
+				var splitContent = content.value.split("\n")
 				result = `[${splitContent.slice(1, splitContent.length - 1).join(",")}]`
+				break
+			case "runImage":
+				result = content.value.split("\n")
 				break
 			default:
 				break

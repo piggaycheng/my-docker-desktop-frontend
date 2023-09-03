@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, computed } from 'vue';
+import { onMounted, watch, ref, computed } from 'vue';
 import { VDataTable } from 'vuetify/labs/components';
 import { useRouter } from 'vue-router';
-import { useReplyMessage, useListener, type CallbackEvent } from '../hooks/MainPty'
+import { useReplyMessage, useSendMessage, useListener, type CallbackEvent } from '../hooks/MainPty'
 
-const w = (window as any);
 const imageListReplyMessage = useReplyMessage("getImages")
+const runImageReplyMessage = useReplyMessage("runImage")
+const { sendMessage } = useSendMessage()
 const data = computed(() => {
   let result = []
   try {
@@ -45,7 +46,7 @@ const mainCallback = (e: CallbackEvent) => {
       imageListReplyMessage.appendReplyMessage(e.data)
       break;
     case "runImage":
-      router.push({ path: "/containers" })
+      runImageReplyMessage.appendReplyMessage(e.data)
       break;
     default:
       break;
@@ -55,19 +56,20 @@ const mainCallback = (e: CallbackEvent) => {
 useListener("replyMainPty", mainCallback)
 
 onMounted(() => {
-  w.process.send("mainPty", {
-    "type": "image",
-    "method": "getImages"
-  })
+  sendMessage("mainPty", "image", "getImages")
 })
 
 const runImage = (imageId: string) => {
-  window.postMessage({
-    "type": "image",
-    "method": "runImage",
-    "imageId": imageId
+  sendMessage("mainPty", "image", "runImage", {
+    imageId: imageId
   })
 }
+
+watch(runImageReplyMessage.replyMessage, (newVal) => {
+  try {
+    if (newVal[1]) router.push({ path: "/containers" })
+  } catch { }
+})
 </script>
 
 <template>
