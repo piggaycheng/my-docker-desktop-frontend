@@ -1,8 +1,17 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref, computed } from 'vue';
 import { VDataTable } from 'vuetify/labs/components';
+import { useReplyMessage, useSendMessage, useListener, type CallbackEvent } from '../hooks/MainPty'
 
-const data = ref([]);
+const containerListReplyMessage = useReplyMessage("getContainers")
+const { sendMessage } = useSendMessage()
+const data = computed(() => {
+  let result = []
+  try {
+    result = JSON.parse(containerListReplyMessage.replyMessage.value as any)
+  } catch { }
+  return result
+});
 const dataTableConfig = ref({
   itemsPerPage: 5,
   headers: [{
@@ -45,13 +54,20 @@ const messageCallback = (e: MessageEvent) => {
   }
 }
 
-onMounted(() => {
-  window.addEventListener("message", messageCallback)
-  getContainers()
-})
+const mainCallback = (e: CallbackEvent) => {
+  switch (e.originMessage.method) {
+    case "getContainers":
+      containerListReplyMessage.appendReplyMessage(e.data)
+      break;
+    default:
+      break;
+  }
+}
 
-onUnmounted(() => {
-  window.removeEventListener("message", messageCallback)
+useListener("replyMainPty", mainCallback)
+
+onMounted(() => {
+  sendMessage("mainPty", "container", "getContainers")
 })
 
 function getContainers() {

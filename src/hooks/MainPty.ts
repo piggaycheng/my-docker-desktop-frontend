@@ -15,6 +15,7 @@ const useReplyMessage = (type: string) => {
 		let result: any = ""
 		switch (type) {
 			case "getImages":
+			case "getContainers":
 				var splitContent = content.value.split("\n")
 				result = `[${splitContent.slice(1, splitContent.length - 1).join(",")}]`
 				break
