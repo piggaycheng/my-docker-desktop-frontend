@@ -11,7 +11,7 @@ const items = ref([
 <template>
   <v-navigation-drawer permanent absolute>
     <v-list density="compact" nav>
-      <v-list-item v-for="(item, i) in items" :key="i" :value="item" color="primary" :to="item.to">
+      <v-list-item v-for="(item, i) in items" :key="i" color="primary" :to="item.to">
         <v-list-item-title v-text="item.text"></v-list-item-title>
       </v-list-item>
     </v-list>
